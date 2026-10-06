@@ -26,12 +26,20 @@ BibliotecaMangas Mobile funciona como una lista de deseos de mangas, donde el us
 
 - React Native
 - Expo SDK 57
-- TypeScrippt
+- TypeScript
 - React Navigation
 - AsyncStorage
 - Expo Notifications
 - Jest
 - React Native Testing Library
+
+## APK Android
+
+La aplicación puede instalarse directamente en un dispositivo Android desde el siguiente enlace:
+
+[Descargar BibliotecaMangas Mobile](https://expo.dev/accounts/adri.gimenez/projects/BibliotecaMangasMobile/builds/ee88af86-ec72-4015-a7fb-e04de2e00d17)
+
+El APK corresponde a una compilación `preview` realizada con EAS Build y funciona de manera independiente, sin necesidad de ejecutar Metro ni `npx expo start`.
 
 ## Ejecución
 
@@ -44,7 +52,7 @@ npm install
 Iniciar Proyecto
 
 ```bash
-npm expo start --dev-client
+npx expo start --dev-client
 ```
 
 La aplicación utiliza un Development Build de Expo para poder ejecutar correctamente las notificaciones locales.
@@ -66,3 +74,6 @@ Actualmente el proyecto cuenta con 5 tests:
 Resultado final: 
 ![Resultado de los tests](docs/evidencias/tests-passed.png)
 
+## Demo
+
+[Ver video demo en YouTube](https://youtube.com/shorts/M-iI80gU1mM?si=xva7qPdO81LXoqtx)

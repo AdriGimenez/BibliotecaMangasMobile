@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { StyleSheet, Text, TextInput,TouchableOpacity, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { getMangas, saveMangas } from '../storage/mangaStorage';
 import CustomButton from '../components/CustomButton';
 import { scheduleMangaReminder } from '../notifications/notificationService';
@@ -58,76 +58,85 @@ export default function AddMangaScreen({ navigation }: Props) {
     };
 
     return (
-        <View style={[globalStyles.screen, styles.container]}>
-            <TouchableOpacity 
-                style={styles.backButton}
-                onPress={() => navigation.goBack()}
-            >
-                <Text style={styles.backText}>
-                    ↩ Volver
-                </Text>
-            </TouchableOpacity>
+        <KeyboardAvoidingView
+            style={styles.keyboardContainer}
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+            <ScrollView
+                contentContainerStyle={styles.scrollContent}
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}>
+                <View style={[globalStyles.screen, styles.container]}>
+                    <TouchableOpacity 
+                        style={styles.backButton}
+                        onPress={() => navigation.goBack()}
+                    >
+                        <Text style={styles.backText}>
+                            ↩ Volver
+                        </Text>
+                    </TouchableOpacity>
 
-            <View style={styles.hero}>
-                <Text style={editorialStyles.title}>
-                    Agregar
-                </Text>
+                    <View style={styles.hero}>
+                        <Text style={editorialStyles.title}>
+                            Agregar
+                        </Text>
 
-                <Text style={editorialStyles.titleItalic}>
-                    manga.
-                </Text>
+                        <Text style={editorialStyles.titleItalic}>
+                            manga.
+                        </Text>
 
-                <Text style={editorialStyles.subtitle}>
-                    Agregá un manga a tu lista de deseos.
-                </Text>
-            </View>
+                        <Text style={editorialStyles.subtitle}>
+                            Agregá un manga a tu lista de deseos.
+                        </Text>
+                    </View>
 
-            <View style={styles.divider} />
-            
-            <View style={styles.form}>
-                <Text style={globalStyles.label}>
-                    Título
-                </Text>
+                    <View style={styles.divider} />
+                    
+                    <View style={styles.form}>
+                        <Text style={globalStyles.label}>
+                            Título
+                        </Text>
 
-                <TextInput
-                    style={globalStyles.input}
-                    placeholder="Ej: Maid-sama"
-                    placeholderTextColor={colors.sage}
-                    value={titulo}
-                    onChangeText={setTitulo}
-                />
+                        <TextInput
+                            style={globalStyles.input}
+                            placeholder="Ej: Maid-sama"
+                            placeholderTextColor={colors.sage}
+                            value={titulo}
+                            onChangeText={setTitulo}
+                        />
 
-                <Text style={globalStyles.label}>
-                    Tomo
-                </Text>
+                        <Text style={globalStyles.label}>
+                            Tomo
+                        </Text>
 
-                <TextInput
-                    style={globalStyles.input}
-                    placeholder="Ej: 1"
-                    placeholderTextColor={colors.sage}
-                    value={tomo}
-                    onChangeText={setTomo}
-                    keyboardType="numeric"
-                />
+                        <TextInput
+                            style={globalStyles.input}
+                            placeholder="Ej: 1"
+                            placeholderTextColor={colors.sage}
+                            value={tomo}
+                            onChangeText={setTomo}
+                            keyboardType="numeric"
+                        />
 
-                <Text style={globalStyles.label}>
-                    Editorial
-                </Text>
+                        <Text style={globalStyles.label}>
+                            Editorial
+                        </Text>
 
-                <TextInput
-                    style={globalStyles.input}
-                    placeholder="Ej: Ivrea"
-                    placeholderTextColor={colors.sage}
-                    value={editorial}
-                    onChangeText={setEditorial}
-                />
+                        <TextInput
+                            style={globalStyles.input}
+                            placeholder="Ej: Ivrea"
+                            placeholderTextColor={colors.sage}
+                            value={editorial}
+                            onChangeText={setEditorial}
+                        />
 
-                <CustomButton
-                    title='Guardar manga'
-                    onPress={handleSave}
-                />
-            </View>
-        </View>
+                        <CustomButton
+                            title='Guardar manga'
+                            onPress={handleSave}
+                        />
+                    </View>
+                </View>
+            </ScrollView>
+        </KeyboardAvoidingView>
     );
 }
 
@@ -135,6 +144,15 @@ const styles = StyleSheet.create({
     container: {
         paddingTop: 70,
         paddingBottom: 40,
+    },
+
+    keyboardContainer: {
+        flex: 1,
+        backgroundColor: colors.ivory,
+    },
+
+    scrollContent: {
+        flexGrow: 1,
     },
 
     backButton: {

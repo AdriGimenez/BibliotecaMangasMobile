@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import CustomButton from '../components/CustomButton';
 
 import { globalStyles } from '../theme/globalStyles';
@@ -43,109 +43,120 @@ export default function RegisterScreen({ navigation }: Props) {
     };
 
     return (
-        <View style={[globalStyles.screen, styles.container]}>
-            <View style={[authStyles.brandContainer, styles.brandContainer]}>
-                <Text style={authStyles.brand}>
-                    Biblioteca
-                    <Text style={authStyles.brandAccent}>
-                        Mangas
-                    </Text>
-                </Text>
+        <KeyboardAvoidingView
+            style={styles.keyboardContainer}
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
 
-                <View style={authStyles.decorativeLine}>
-                    <View style={authStyles.line} />
+            <ScrollView
+                contentContainerStyle={styles.scrollContent}
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}>
 
-                    <Text style={authStyles.diamond}>
-                        ◆
-                    </Text>
-
-                    <View style={authStyles.line} />
-                </View>
-
-                <Text style={[editorialStyles.overline, 
-                    authStyles.centeredOverline]}>
-                    TU PRÓXIMA HISTORIA EMPIEZA ACÁ
-                </Text>
-            </View>
-
-            <View style={[authStyles.hero, styles.hero]}>
-                <Text style={editorialStyles.title}>
-                    Crear{' '}
-                    <Text style={editorialStyles.titleItalic}>
-                        cuenta.
-                    </Text>
-                </Text>
-
-                <Text style={[editorialStyles.subtitle,
-                            authStyles.centeredOverline,]}>
-                    Empezá a organizar tu colección de mangas.
-                </Text>
-            </View>
-
-            <View style={authStyles.form}>
-                <Text style={globalStyles.label}>
-                    Usuario
-                </Text>
-                <TextInput
-                    style={globalStyles.input}
-                    placeholder="Ingresa tu usuario"
-                    placeholderTextColor={colors.sage}
-                    value={username}
-                    onChangeText={setUsername}
-                />
-
-                <Text style={globalStyles.label}>
-                    Correo electrónico
-                </Text>
-                <TextInput
-                    style={globalStyles.input}
-                    placeholder="correo@ejemplo.com"
-                    placeholderTextColor={colors.sage}
-                    value={email}
-                    onChangeText={setEmail}
-                />
-                <Text style={globalStyles.label}>
-                    Contraseña
-                </Text>
-                <TextInput
-                    style={globalStyles.input}
-                    placeholder="Ingresa tu contraseña"
-                    placeholderTextColor={colors.sage}
-                    value={password}
-                    onChangeText={setPassword}
-                    secureTextEntry
-                />
-
-                <Text style={globalStyles.label}>
-                    Confirmar contraseña
-                </Text>
-                <TextInput
-                    style={globalStyles.input}
-                    placeholder="Repetí tu contraseña"
-                    placeholderTextColor={colors.sage}
-                    value={confirmPassword}
-                    onChangeText={setConfirmPassword}
-                    secureTextEntry
-                />
-
-                <CustomButton 
-                    title="Registrarme" 
-                    onPress={handleRegister}
-                />
-
-                <View style={authStyles.linkContainer}>
-                    <Text style={authStyles.linkText}>
-                        ¿Ya tenés cuenta?
-                    </Text>
-
-                    <TouchableOpacity onPress={() => navigation.goBack()}>
-                        <Text style={authStyles.link}>
-                            Iniciar sesión
+                <View style={[globalStyles.screen, styles.container]}>
+                    <View style={[authStyles.brandContainer, styles.brandContainer]}>
+                        <Text style={authStyles.brand}>
+                            Biblioteca
+                            <Text style={authStyles.brandAccent}>
+                                Mangas
+                            </Text>
                         </Text>
-                    </TouchableOpacity>
+
+                        <View style={authStyles.decorativeLine}>
+                            <View style={authStyles.line} />
+
+                            <Text style={authStyles.diamond}>
+                                ◆
+                            </Text>
+
+                            <View style={authStyles.line} />
+                        </View>
+
+                        <Text style={[editorialStyles.overline, 
+                            authStyles.centeredOverline]}>
+                            TU PRÓXIMA HISTORIA EMPIEZA ACÁ
+                        </Text>
+                    </View>
+
+                    <View style={[authStyles.hero, styles.hero]}>
+                        <Text style={editorialStyles.title}>
+                            Crear{' '}
+                            <Text style={editorialStyles.titleItalic}>
+                                cuenta.
+                            </Text>
+                        </Text>
+
+                        <Text style={[editorialStyles.subtitle,
+                                    authStyles.centeredOverline,]}>
+                            Empezá a organizar tu colección de mangas.
+                        </Text>
+                    </View>
+
+                    <View style={authStyles.form}>
+                        <Text style={globalStyles.label}>
+                            Usuario
+                        </Text>
+                        <TextInput
+                            style={globalStyles.input}
+                            placeholder="Ingresa tu usuario"
+                            placeholderTextColor={colors.sage}
+                            value={username}
+                            onChangeText={setUsername}
+                        />
+
+                        <Text style={globalStyles.label}>
+                            Correo electrónico
+                        </Text>
+                        <TextInput
+                            style={globalStyles.input}
+                            placeholder="correo@ejemplo.com"
+                            placeholderTextColor={colors.sage}
+                            value={email}
+                            onChangeText={setEmail}
+                        />
+                        <Text style={globalStyles.label}>
+                            Contraseña
+                        </Text>
+                        <TextInput
+                            style={globalStyles.input}
+                            placeholder="Ingresa tu contraseña"
+                            placeholderTextColor={colors.sage}
+                            value={password}
+                            onChangeText={setPassword}
+                            secureTextEntry
+                        />
+
+                        <Text style={globalStyles.label}>
+                            Confirmar contraseña
+                        </Text>
+                        <TextInput
+                            style={globalStyles.input}
+                            placeholder="Repetí tu contraseña"
+                            placeholderTextColor={colors.sage}
+                            value={confirmPassword}
+                            onChangeText={setConfirmPassword}
+                            secureTextEntry
+                        />
+
+                        <CustomButton 
+                            title="Registrarme" 
+                            onPress={handleRegister}
+                        />
+
+                        <View style={authStyles.linkContainer}>
+                            <Text style={authStyles.linkText}>
+                                ¿Ya tenés cuenta?
+                            </Text>
+
+                            <TouchableOpacity onPress={() => navigation.goBack()}>
+                                <Text style={authStyles.link}>
+                                    Iniciar sesión
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
                 </View>
-            </View>
-        </View>
+            </ScrollView>
+        </KeyboardAvoidingView>    
     );
 }
 
@@ -161,5 +172,14 @@ const styles = StyleSheet.create({
 
     hero: {
         marginBottom: 10,
+    },
+
+    keyboardContainer: {
+        flex: 1,
+        backgroundColor: colors.ivory,
+    },
+
+    scrollContent: {
+        flexGrow: 1,
     },
 });

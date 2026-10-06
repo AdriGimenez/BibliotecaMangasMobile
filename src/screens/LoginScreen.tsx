@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import CustomButton from '../components/CustomButton';
 import { useAuth } from '../context/AuthContext';
 
@@ -30,91 +30,102 @@ export default function LoginScreen({ navigation }: Props) {
     };
 
     return (
-        <View style={[globalStyles.screen, styles.container]}>
-            <View style={authStyles.brandContainer}>
-                <Text style={authStyles.brand}>
-                    Biblioteca
-                    <Text style={authStyles.brandAccent}>
-                        Mangas
-                    </Text>
-                </Text>
+        <KeyboardAvoidingView
+            style={styles.keyboardContainer}
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+                <ScrollView
+                    contentContainerStyle={styles.scrollContent}
+                    keyboardShouldPersistTaps="handled"
+                    showsVerticalScrollIndicator={false}>
+            
+                    <View style={[globalStyles.screen, styles.container]}>
+                        <View style={authStyles.brandContainer}>
+                            <Text style={authStyles.brand}>
+                                Biblioteca
+                                <Text style={authStyles.brandAccent}>
+                                    Mangas
+                                </Text>
+                            </Text>
 
-                <View style={authStyles.decorativeLine}>
-                    <View style={authStyles.line} />
-                    <Text style={authStyles.diamond}>◆</Text>
-                    <View style={authStyles.line} />
-                </View>
+                        <View style={authStyles.decorativeLine}>
+                            <View style={authStyles.line} />
+                                <Text style={authStyles.diamond}>
+                                    ◆
+                                </Text>
+                                
+                                <View style={authStyles.line} />
+                            </View>
                 
-                <Text style={[editorialStyles.overline,
-                    authStyles.centeredOverline
-                ]}>
-                    TU PRÓXIMA HISTORIA EMPIEZA ACÁ
-                </Text>
-            </View>
+                            <Text style={[editorialStyles.overline, authStyles.centeredOverline]}>
+                                TU PRÓXIMA HISTORIA EMPIEZA ACÁ
+                            </Text>
+                        </View>
 
-            <View style={authStyles.hero}>
-                <Text style={editorialStyles.title}>
-                    Bienvenid@
-                </Text>
+                        <View style={authStyles.hero}>
+                            <Text style={editorialStyles.title}>
+                                Bienvenid@
+                            </Text>
 
-                <Text style={editorialStyles.titleItalic}>
-                    de nuevo.
-                </Text>
+                            <Text style={editorialStyles.titleItalic}>
+                                de nuevo.
+                            </Text>
 
-                <Text style={[editorialStyles.subtitle,
-                    authStyles.centeredSubtitle]}>
-                    Iniciá sesión para continuar con tu colección de mangas.
-                </Text>
-            </View>
+                            <Text style={[editorialStyles.subtitle, authStyles.centeredSubtitle]}>
+                                Iniciá sesión para continuar con tu colección de mangas.
+                            </Text>
+                        </View>
 
-            <View style={authStyles.form}>
-                <Text style={globalStyles.label}>
-                    Correo electrónico
-                </Text>
+                        <View style={authStyles.form}>
+                            <Text style={globalStyles.label}>
+                                Correo electrónico
+                            </Text>
 
-                <TextInput
-                    style={globalStyles.input}
-                    placeholder="correo@ejemplo.com"
-                    placeholderTextColor={colors.sage}
-                    value={email}
-                    onChangeText={setEmail}
-                    autoCapitalize='none'
-                    keyboardType='email-address'
-                />
+                            <TextInput
+                                style={globalStyles.input}
+                                placeholder="correo@ejemplo.com"
+                                placeholderTextColor={colors.sage}
+                                value={email}
+                                onChangeText={setEmail}
+                                autoCapitalize='none'
+                                keyboardType='email-address'
+                            />
 
-                <Text style={globalStyles.label}>
-                    Contraseña
-                </Text>
+                            <Text style={globalStyles.label}>
+                                Contraseña
+                            </Text>
 
-                <TextInput
-                    style={globalStyles.input}
-                    placeholder="Ingresá tu contraseña"
-                    placeholderTextColor={colors.sage}
-                    value={password}
-                    onChangeText={setPassword}
-                    secureTextEntry
-                />
+                            <TextInput
+                                style={globalStyles.input}
+                                placeholder="Ingresá tu contraseña"
+                                placeholderTextColor={colors.sage}
+                                value={password}
+                                onChangeText={setPassword}
+                                secureTextEntry
+                            />
 
-                <CustomButton 
-                    title="Iniciar sesión" 
-                    onPress={handleLogin}
-                />
+                            <CustomButton 
+                                title="Iniciar sesión" 
+                                onPress={handleLogin}
+                            />
 
-                <View style={authStyles.linkContainer}>
-                    <Text style={authStyles.linkText}>
-                        ¿No tenés cuenta?
-                    </Text>
+                            <View style={authStyles.linkContainer}>
+                                <Text style={authStyles.linkText}>
+                                    ¿No tenés cuenta?
+                                </Text>
 
-                    <TouchableOpacity
-                        onPress={() => navigation.navigate('Register')}
-                    >
-                        <Text style={authStyles.link}>
-                            Crear cuenta
-                        </Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
-        </View>
+                            <TouchableOpacity
+                                onPress={() => navigation.navigate('Register')}
+                            >
+    
+                                <Text style={authStyles.link}>
+                                    Crear cuenta
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                 </View>
+                </ScrollView>
+        </KeyboardAvoidingView>
     );
 }
 
@@ -122,5 +133,14 @@ const styles = StyleSheet.create({
     container: {
         paddingTop: 90,
         paddingBottom: 40,
+    },
+
+    keyboardContainer: {
+        flex: 1,
+        backgroundColor: colors.ivory,
+    },
+
+    scrollContent: {
+        flexGrow: 1,
     },
 });
