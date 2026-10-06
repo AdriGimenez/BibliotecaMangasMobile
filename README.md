@@ -71,7 +71,8 @@ Actualmente el proyecto cuenta con 5 tests:
 - Validación del título obligatorio.
 - Validación del número del tomo.
 
-Resultado final: 
+## Resultado Final: 
+
 ![Resultado de los tests](docs/evidencias/tests-passed.png)
 
 ## Demo
