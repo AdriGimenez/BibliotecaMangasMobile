@@ -1,8 +1,8 @@
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
-import { getMangas, saveMangas } from '../storage/mangaStorage';
 import { useAuth } from '../context/AuthContext';
+import { useMangaStore } from '../store/mangaStore';
 
 import { colors } from '../theme/colors';
 import { globalStyles } from '../theme/globalStyles';
@@ -10,7 +10,6 @@ import { editorialStyles } from '../theme/editorialStyles';
 
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/AppNavigator';
-import type { Manga } from '../types/Manga';
 
 import CustomButton from '../components/CustomButton';
 
@@ -19,26 +18,20 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 export default function HomeScreen({ navigation }: Props) {
     const { user, logout } = useAuth();
 
-    const [mangas, setMangas] = useState<Manga[]>([]);
+    const mangas = useMangaStore((state) => state.mangas);
+
+    const loadMangas = useMangaStore((state) => state.loadMangas);
+
+    const deleteManga = useMangaStore((state) => state.deleteManga);
 
     useFocusEffect(
         useCallback(() => {
-            const loadMangas = async() => {
-                const mangasGuardados = await getMangas();
-                setMangas(mangasGuardados);
-            };
-
             loadMangas();
-        }, [])
+        }, [loadMangas])
     );
 
-    const handleDelete = async (id: string) => {
-        const newList = mangas.filter(
-            (manga) => manga.id !== id);
-
-        setMangas(newList);
-
-        await saveMangas(newList);
+    const handleDelete = async (mangaId: string) => {
+        await deleteManga(mangaId);
     };
 
     return (

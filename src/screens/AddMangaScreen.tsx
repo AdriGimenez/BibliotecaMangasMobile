@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { getMangas, saveMangas } from '../storage/mangaStorage';
+import { useMangaStore } from '../store/mangaStore';
 import CustomButton from '../components/CustomButton';
 import { scheduleMangaReminder } from '../notifications/notificationService';
 
@@ -21,7 +21,10 @@ export default function AddMangaScreen({ navigation }: Props) {
     const [tomo, setTomo] = useState('');
     const [editorial, setEditorial] = useState('');
 
+    const addManga = useMangaStore((state) => state.addManga);
+
     const handleSave = async () => {
+
         const errors = validateMangaInput(
             titulo,
             tomo,
@@ -40,13 +43,9 @@ export default function AddMangaScreen({ navigation }: Props) {
             editorial,
             comprado: false,
         };
-
-        const mangasGuardados = await getMangas();
-
-        const newList = [...mangasGuardados, newManga];
-
-        await saveMangas(newList);
         
+        await addManga(newManga);
+
         await scheduleMangaReminder(
             newManga.titulo,
             newManga.tomo
