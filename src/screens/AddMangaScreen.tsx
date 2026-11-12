@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useMangaStore } from '../store/mangaStore';
 import CustomButton from '../components/CustomButton';
 import { scheduleMangaReminder } from '../notifications/notificationService';
@@ -14,14 +14,71 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/AppNavigator';
 import type { Manga } from '../types/Manga';
 
+import * as ImagePicker from 'expo-image-picker';
+import { Alert } from 'react-native';
+
+import { guardarImagenManga } from '../utils/imageStorage';
+
 type Props = NativeStackScreenProps<RootStackParamList, 'AddManga'>;
 
 export default function AddMangaScreen({ navigation }: Props) {
     const [titulo, setTitulo] = useState('');
     const [tomo, setTomo] = useState('');
     const [editorial, setEditorial] = useState('');
+    const [imagenUri, setImagenUri] = useState<string | null>(null);
 
     const addManga = useMangaStore((state) => state.addManga);
+
+    const tomarFoto = async () => {
+        try {
+            const permiso = await ImagePicker.requestCameraPermissionsAsync();
+
+            if (!permiso.granted) {
+                Alert.alert(
+                    'Permiso requerido',
+                    'Necesitamos acceso a la cámara para tomar fotos del manga.'
+                );
+                return;
+            }
+
+            const resultado = await ImagePicker.launchCameraAsync({
+                mediaTypes: ['images'],
+                allowsEditing: true,
+                quality: 0.8,
+            });
+
+            if (!resultado.canceled) {
+                setImagenUri(resultado.assets[0].uri);
+            }
+        } catch (error) {
+            console.error('Error al abrir la cámara:', error);
+            Alert.alert(
+                'Error',
+                'No se pudo abrir la cámara.'
+            );
+        }
+    };
+
+    const seleccionarImagen = async () => {
+        try {
+            const resultado = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ['images'],
+                allowsEditing: true,
+                quality: 0.8,
+            });
+
+            if (!resultado.canceled) {
+                setImagenUri(resultado.assets[0].uri);
+            }
+        } catch (error) {
+            console.error('Error al abrir la galería:', error);
+
+            Alert.alert(
+                'Error',
+                'No se pudo seleccionar la imagen.'
+            );
+        }
+    }
 
     const handleSave = async () => {
 
@@ -35,6 +92,22 @@ export default function AddMangaScreen({ navigation }: Props) {
             console.log('Errores de validación:', errors);
             return;
         }
+
+        let imagenGuardadaUri: string | undefined;
+
+        if (imagenUri) {
+            try {
+                imagenGuardadaUri = await guardarImagenManga(imagenUri);
+            } catch (error) {
+                console.error('Error al guardar la imagen:', error);
+
+                Alert.alert(
+                    'Error',
+                    'No se pudo guardar la imagen del manga.'
+                );
+                return;
+            }
+        }
         
         const newManga: Manga = {
             id: Date.now().toString(),
@@ -42,6 +115,7 @@ export default function AddMangaScreen({ navigation }: Props) {
             tomo: Number(tomo),
             editorial,
             comprado: false,
+            imagenUri: imagenGuardadaUri,
         };
         
         await addManga(newManga);
@@ -129,6 +203,24 @@ export default function AddMangaScreen({ navigation }: Props) {
                         />
 
                         <CustomButton
+                            title= "📷 Tomar foto"
+                            onPress={tomarFoto}
+                        />
+
+                        <CustomButton
+                            title= "🖼️ Seleccionar imagen"
+                            onPress={seleccionarImagen}
+                        />
+
+                        {imagenUri && (
+                            <Image
+                                source={{ uri: imagenUri }}
+                                style={styles.imagenPreview}
+                                resizeMode="contain"
+                            />
+                        )}
+
+                        <CustomButton
                             title='Guardar manga'
                             onPress={handleSave}
                         />
@@ -180,5 +272,12 @@ const styles = StyleSheet.create({
 
     form: {
         width: '100%',
+    },
+
+    imagenPreview: {
+        width: '100%',
+        height: 220,
+        borderRadius: 12,
+        marginTop: 16,
     },
 });

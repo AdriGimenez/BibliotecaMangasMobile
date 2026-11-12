@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { useAuth } from '../context/AuthContext';
@@ -91,11 +91,18 @@ export default function HomeScreen({ navigation }: Props) {
                         </Text>
                     }
                     renderItem={({ item }) => (
-                        <View style={[globalStyles.card,
-                            styles.mangaCard,]}>
-                            
+                        <View style={[globalStyles.card, styles.mangaCard,]}>
                             <View style={styles.cardContent}>
-                                <View>
+
+                                {item.imagenUri && (
+                                    <Image
+                                        source={{ uri: item.imagenUri }}
+                                        style={styles.mangaImage}
+                                        resizeMode="cover"
+                                    />
+                                )}
+                                
+                                <View style={styles.mangaDetails}>
                                     <Text style={styles.mangaTitle}>
                                         {item.titulo}
                                     </Text>
@@ -103,18 +110,20 @@ export default function HomeScreen({ navigation }: Props) {
                                     <Text style={styles.mangaInfo}>
                                         Tomo {item.tomo}
                                     </Text>
-
+                                        
                                     <Text style={styles.mangaInfo}>
                                         {item.editorial}
+                                
                                     </Text>
                                 </View>
 
                                 <TouchableOpacity
                                     style={styles.deleteButton}
                                     onPress={() => handleDelete(item.id)}>
-                                        <Text style={styles.deleteText}>
-                                            ×
-                                        </Text>
+                
+                                    <Text style={styles.deleteText}>
+                                        ×
+                                    </Text>
                                 </TouchableOpacity>
                             </View>
                         </View>
@@ -206,8 +215,8 @@ const styles = StyleSheet.create({
 
     cardContent: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
         alignItems: 'center',
+        gap: 16,
     },
 
     mangaTitle: {
@@ -243,5 +252,15 @@ const styles = StyleSheet.create({
         color: colors.sage,
         textAlign: 'center',
         marginTop: 30,
+    },
+
+    mangaImage: {
+        width: 78,
+        height: 96,
+        borderRadius: 8,
+    },
+
+    mangaDetails: {
+        flex: 1,
     },
 });

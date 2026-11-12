@@ -4,4 +4,5 @@ export type Manga = {
     tomo: number;
     editorial: string;
     comprado: boolean;
+    imagenUri?: string;
 }
