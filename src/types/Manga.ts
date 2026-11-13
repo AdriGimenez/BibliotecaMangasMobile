@@ -5,4 +5,8 @@ export type Manga = {
     editorial: string;
     comprado: boolean;
     imagenUri?: string;
+    ubicacion?: {
+        latitud: number;
+        longitud: number;
+    };
 }
