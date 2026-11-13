@@ -117,8 +117,14 @@ export default function HomeScreen({ navigation }: Props) {
 
                                     {item.ubicacion && (
                                         <Text style={styles.mangaUbicacion}>
-                                           📍 {item.ubicacion.latitud.toFixed(2)},
-                                           {' '}{item.ubicacion.longitud.toFixed(2)} 
+                                           📍 {item.ubicacion.latitud.toFixed(5)},
+                                           {' '}{item.ubicacion.longitud.toFixed(5)} 
+                                        </Text>
+                                    )}
+
+                                    {item.contactoNombre &&(
+                                        <Text style={styles.mangaContacto}>
+                                            📱Consultar en: {item.contactoNombre}
                                         </Text>
                                     )}
                                 </View>
@@ -274,5 +280,11 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: colors.emerald,
         marginTop: 8,
+    },
+
+    mangaContacto: {
+        fontSize: 12,
+        color: colors.emerald,
+        marginTop: 6,
     },
 });

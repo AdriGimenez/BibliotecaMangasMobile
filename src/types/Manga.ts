@@ -9,4 +9,5 @@ export type Manga = {
         latitud: number;
         longitud: number;
     };
+    contactoNombre?: string;
 }

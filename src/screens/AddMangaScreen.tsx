@@ -16,8 +16,10 @@ import type { Manga } from '../types/Manga';
 
 import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
+import * as Contacts from 'expo-contacts/legacy';
 
 import { guardarImagenManga } from '../utils/imageStorage';
+import SelectorMapa from '../components/SelectorMapa';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'AddManga'>;
 
@@ -27,6 +29,8 @@ export default function AddMangaScreen({ navigation }: Props) {
     const [editorial, setEditorial] = useState('');
     const [imagenUri, setImagenUri] = useState<string | null>(null);
     const [ubicacion, setUbicacion] = useState<{ latitud: number; longitud: number;} | null>(null);
+    const [contactoNombre, setContactoNombre] = useState<string | null>(null);
+    const [mostrarMapa, setMostrarMapa] = useState(false);
 
     const [mostrarOpciones, setMostrarOpciones] = useState(false);
 
@@ -136,6 +140,31 @@ export default function AddMangaScreen({ navigation }: Props) {
             Alert.alert('Error', 'No se pudo obtener la ubicación.');
         }
     };
+
+    // CONTACTO
+    const seleccionarContacto = async () => {
+        try {
+            let permiso = await Contacts.getPermissionsAsync();
+
+            if (!permiso.granted && permiso.canAskAgain) {
+                permiso = await Contacts.requestPermissionsAsync();
+            }
+
+            if (!permiso.granted) {
+                Alert.alert('Permiso requerido', 'Necesitamos permiso para seleccionar un contacto.');
+                return;
+            }
+
+            const contacto = await Contacts.presentContactPickerAsync();
+
+            if (contacto) {
+                setContactoNombre(contacto.name);
+            }
+        } catch (error) {
+            console.error('Error al seleccionar contacto:', error);
+            Alert.alert('Error', 'No se pudo seleccionar el contacto');
+        }
+    };
     
     // GUARDAR MANGA
     const handleSave = async () => {
@@ -166,6 +195,7 @@ export default function AddMangaScreen({ navigation }: Props) {
             comprado: false,
             imagenUri: imagenGuardadaUri,
             ubicacion: ubicacion ?? undefined,
+            contactoNombre: contactoNombre ?? undefined,
         };
         
         await addManga(newManga);
@@ -313,7 +343,7 @@ export default function AddMangaScreen({ navigation }: Props) {
                         {mostrarOpciones && (
                             <View style={styles.opcionesContainer}>
                                 <TouchableOpacity
-                                    style={styles.opcionUbicacion}
+                                    style={styles.opcionAdicional}
                                     onPress={obtenerUbicacion}
                                 >
                                     <Text style={styles.opcionTexto}>
@@ -328,6 +358,32 @@ export default function AddMangaScreen({ navigation }: Props) {
                                         ✓ Ubicación guardada
                                     </Text>
                                 )}
+
+                                <TouchableOpacity
+                                    style={styles.opcionAdicional}
+                                    onPress={seleccionarContacto}
+                                >
+                                    <Text style={styles.opcionTexto}>
+                                        📱{contactoNombre
+                                            ? 'Cambiar contacto'
+                                            : 'Seleccionar contacto'}
+                                    </Text>
+                                </TouchableOpacity>
+
+                                {contactoNombre && (
+                                    <Text style={styles.estadoUbicacion}>
+                                        ✓ {contactoNombre}
+                                    </Text>
+                                )}
+
+                                <TouchableOpacity
+                                    style={styles.opcionAdicional}
+                                    onPress={() => setMostrarMapa(true)}
+                                >
+                                    <Text style={styles.opcionTexto}>
+                                        Elegir ubicación en el mapa
+                                    </Text>
+                                </TouchableOpacity>
                             </View>
                         )}
 
@@ -341,6 +397,16 @@ export default function AddMangaScreen({ navigation }: Props) {
                     </View>
                 </View>
             </ScrollView>
+
+            <SelectorMapa 
+                visible={mostrarMapa}
+                ubicacionInicial={ubicacion}
+                onCerrar={() => setMostrarMapa(false)}
+                onConfirmar={(coordenadas) => {
+                    setUbicacion(coordenadas);
+                    setMostrarMapa(false);
+                }}
+            />
         </KeyboardAvoidingView>
     );
 }
@@ -418,7 +484,7 @@ const styles = StyleSheet.create({
 
     fotoMiniatura: {
         width: 70,
-        height: 86,
+        height: 72,
         backgroundColor: colors.white,
         borderRadius: 12,
         alignItems: 'center',
@@ -483,7 +549,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 12,
     },
 
-    opcionUbicacion: {
+    opcionAdicional: {
         paddingVertical: 10,
     },
 
