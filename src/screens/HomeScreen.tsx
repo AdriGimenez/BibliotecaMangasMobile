@@ -113,8 +113,14 @@ export default function HomeScreen({ navigation }: Props) {
                                         
                                     <Text style={styles.mangaInfo}>
                                         {item.editorial}
-                                
                                     </Text>
+
+                                    {item.ubicacion && (
+                                        <Text style={styles.mangaUbicacion}>
+                                           📍 {item.ubicacion.latitud.toFixed(2)},
+                                           {' '}{item.ubicacion.longitud.toFixed(2)} 
+                                        </Text>
+                                    )}
                                 </View>
 
                                 <TouchableOpacity
@@ -262,5 +268,11 @@ const styles = StyleSheet.create({
 
     mangaDetails: {
         flex: 1,
+    },
+
+    mangaUbicacion: {
+        fontSize: 12,
+        color: colors.emerald,
+        marginTop: 8,
     },
 });
