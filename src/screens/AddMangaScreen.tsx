@@ -17,6 +17,7 @@ import type { Manga } from '../types/Manga';
 import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
 import * as Contacts from 'expo-contacts/legacy';
+import * as Calendar from 'expo-calendar/legacy';
 
 import { guardarImagenManga } from '../utils/imageStorage';
 import SelectorMapa from '../components/SelectorMapa';
@@ -31,7 +32,7 @@ export default function AddMangaScreen({ navigation }: Props) {
     const [ubicacion, setUbicacion] = useState<{ latitud: number; longitud: number;} | null>(null);
     const [contactoNombre, setContactoNombre] = useState<string | null>(null);
     const [mostrarMapa, setMostrarMapa] = useState(false);
-
+    const [agendarCompra, setAgendarCompra] =useState(false);
     const [mostrarOpciones, setMostrarOpciones] = useState(false);
 
     const addManga = useMangaStore((state) => state.addManga);
@@ -205,6 +206,32 @@ export default function AddMangaScreen({ navigation }: Props) {
             newManga.tomo
         );
 
+        if (agendarCompra) {
+            try {
+                const inicio = new Date();
+
+                //Fecha sugerida: mañana a las 18:00
+                inicio.setDate(inicio.getDate() + 1);
+                inicio.setHours(18, 0, 0, 0);
+
+                const fin = new Date(
+                    inicio.getTime() + 60 * 60 * 1000
+                );
+
+                await Calendar.createEventInCalendarAsync({
+                    title: `Comprar ${newManga.titulo} - tomo ${newManga.tomo}`,
+                    startDate: inicio,
+                    endDate: fin,
+                    notes:
+                        `Editorial: ${newManga.editorial}. ` +
+                        `Consultar en: ${newManga.contactoNombre ?? 'No indicado'}.`,
+                });
+            } catch (error) {
+                console.error('Error al abrir calendario:', error);
+                Alert.alert('Calendario', 'No se pudo abrir el calendario');
+            }
+        }
+
         console.log('Manga guardado:', newManga);
 
         navigation.goBack();
@@ -361,6 +388,15 @@ export default function AddMangaScreen({ navigation }: Props) {
 
                                 <TouchableOpacity
                                     style={styles.opcionAdicional}
+                                    onPress={() => setMostrarMapa(true)}
+                                >
+                                    <Text style={styles.opcionTexto}>
+                                        🗺️ Elegir ubicación en el mapa
+                                    </Text>
+                                </TouchableOpacity>
+
+                                                                <TouchableOpacity
+                                    style={styles.opcionAdicional}
                                     onPress={seleccionarContacto}
                                 >
                                     <Text style={styles.opcionTexto}>
@@ -378,10 +414,12 @@ export default function AddMangaScreen({ navigation }: Props) {
 
                                 <TouchableOpacity
                                     style={styles.opcionAdicional}
-                                    onPress={() => setMostrarMapa(true)}
+                                    onPress={() => setAgendarCompra((valor) => !valor)}
                                 >
                                     <Text style={styles.opcionTexto}>
-                                        Elegir ubicación en el mapa
+                                        📅 {agendarCompra
+                                            ? '✓ Agendar compra al guardar'
+                                            : 'Agendar compra en calendario'}
                                     </Text>
                                 </TouchableOpacity>
                             </View>
