@@ -19,11 +19,10 @@ export default function HomeScreen({ navigation }: Props) {
     const { user, logout } = useAuth();
 
     const mangas = useMangaStore((state) => state.mangas);
-
     const loadMangas = useMangaStore((state) => state.loadMangas);
-
     const deleteManga = useMangaStore((state) => state.deleteManga);
-
+    const updateManga = useMangaStore((state) => state.updateManga);
+    
     useFocusEffect(
         useCallback(() => {
             loadMangas();
@@ -114,6 +113,27 @@ export default function HomeScreen({ navigation }: Props) {
                                     <Text style={styles.mangaInfo}>
                                         {item.editorial}
                                     </Text>
+
+                                    <TouchableOpacity
+                                        style={styles.estadoCompra}
+                                        onPress={() => {
+                                            updateManga({
+                                                ...item,
+                                                comprado: !item.comprado,
+                                            });
+                                        }}
+                                    >
+                                        <Text
+                                            style={[
+                                                styles.estadoCompraTexto,
+                                                item.comprado && styles.estadoComprado,
+                                            ]}
+                                        >
+                                            {item.comprado
+                                                ? '✓ Comprado'
+                                                : '○ Pendiente de Compra'}
+                                        </Text>
+                                    </TouchableOpacity>
 
                                     {item.ubicacion && (
                                         <Text style={styles.mangaUbicacion}>
@@ -286,5 +306,21 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: colors.emerald,
         marginTop: 6,
+    },
+
+    estadoCompra: {
+        alignSelf: 'flex-start',
+        marginTop: 8,
+        paddingVertical: 4,
+    },
+
+    estadoCompraTexto: {
+        fontSize: 13,
+        color: colors.sage,
+        fontWeight: '600',
+    },
+
+    estadoComprado: {
+        color: colors.emerald,
     },
 });
